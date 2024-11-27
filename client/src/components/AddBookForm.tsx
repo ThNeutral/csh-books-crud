@@ -60,10 +60,11 @@ export function AddBookForm() {
   }
 
   async function processFormData(data: TBookData) {
-    await triggerAddBook(data);
+    const addedBook = await triggerAddBook(data);
+    console.log(addedBook)
     setPreviouslyAddedBooks(
       produce(previouslyAddedBooks, (nextState) => {
-        nextState.push(data);
+        nextState.push(addedBook);
       })
     );
   }

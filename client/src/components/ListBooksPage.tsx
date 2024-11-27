@@ -8,6 +8,7 @@ import {
   GridActionsCellItem,
   GridColDef,
   GridRowParams,
+  GridToolbar,
 } from "@mui/x-data-grid";
 import { TBookData } from "../utils/types";
 import { useEffect, useRef, useState } from "react";
@@ -120,7 +121,6 @@ export function ListBooksPage() {
     setPreviouslyAddedBooksWithId(
       previouslyAddedBooks.map((book, index) => {
         return {
-          id: index,
           ...book,
         };
       })
@@ -129,11 +129,9 @@ export function ListBooksPage() {
 
   useEffect(() => {
     if (allBooksData) {
-      console.log(allBooksData);
       setAllBooksWithId(
         allBooksData.map((book, index) => {
           return {
-            id: index,
             ...book,
             publication_date: book.publication_date
               .split("T")[0]
@@ -150,22 +148,21 @@ export function ListBooksPage() {
     <>
       <h3>Books that you have just added</h3>
       <DataGrid
-        columns={previouslyAddedBooksColumns}
+        columns={allColumns}
         rows={previouslyAddedBooksWithId}
-        sx={{ width: 7 * 150 + 10 }}
+        sx={{ width: 7 * 150 + 100 + 10 }}
         hideFooter
+        slots={{ toolbar: GridToolbar }}
       ></DataGrid>
       <h3>All Books</h3>
-      {!areAllBooksLoading ? (
-        <DataGrid
-          columns={allColumns}
-          rows={allBooksWithId}
-          sx={{ width: 7 * 150 + 100 + 10 }}
-          hideFooter
-        ></DataGrid>
-      ) : (
-        <></>
-      )}
+      <DataGrid
+        columns={allColumns}
+        loading={areAllBooksLoading}
+        rows={allBooksWithId}
+        sx={{ width: 7 * 150 + 100 + 10 }}
+        hideFooter
+        slots={{ toolbar: GridToolbar }}
+      ></DataGrid>
     </>
   );
 }

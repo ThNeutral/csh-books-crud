@@ -20,7 +20,7 @@ export async function addBookQuery(
   url: string,
   { arg }: { arg: TBookData }
 ) {
-  await fetcher(url, {
+  return await fetcher(url, {
     method: "POST",
     body: JSON.stringify(arg),
     headers: {

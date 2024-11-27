@@ -1,7 +1,7 @@
 import { atom, selector } from "recoil";
 import { TBookData } from "../utils/types";
 
-export const previouslyAddedBooksState = atom<TBookData[]>({
+export const previouslyAddedBooksState = atom<(TBookData & {id: string})[]>({
   key: "previouslyAddedBooks",
   default: [],
 });
