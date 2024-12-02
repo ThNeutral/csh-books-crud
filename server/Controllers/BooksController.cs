@@ -60,11 +60,7 @@ namespace server.Controllers
                 Publisher = model.Publisher, 
                 Title = model.Title 
             };
-            ErrorCodes result = await _bookService.AddBook(book);
-            if (result == ErrorCodes.SQLError)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, new { message = "Internal server error" });
-            }
+            await _bookService.AddBook(book);
             return StatusCode(StatusCodes.Status201Created, book);
         }
         [HttpGet("get-books")]

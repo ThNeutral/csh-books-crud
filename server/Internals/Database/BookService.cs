@@ -9,11 +9,10 @@ namespace server.Internals.Database
         {
             _dbContext = dbContext;
         }
-        public async Task<ErrorCodes> AddBook(Book book) 
+        public async Task AddBook(Book book) 
         {
             _dbContext.Books.Add(book);
             await _dbContext.SaveChangesAsync();
-            return ErrorCodes.NoError;
         }
         public List<Book> GetBooks()
         {
@@ -37,10 +36,9 @@ namespace server.Internals.Database
                 return ErrorCodes.SQLError;
             }
         }
-        public async Task<ErrorCodes> UpdateBook(Book book) {
+        public async Task UpdateBook(Book book) {
             _dbContext.Update(book);
             await _dbContext.SaveChangesAsync();
-            return ErrorCodes.NoError;
         }
     }
 }

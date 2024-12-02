@@ -3,6 +3,8 @@ using Microsoft.Extensions.Options;
 using Pomelo.EntityFrameworkCore.MySql;
 using server.Internals.Database;
 
+DotNetEnv.Env.Load();
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -15,7 +17,10 @@ builder.WebHost.UseUrls("http://localhost:3000");
 
 builder.Services.AddControllers();
 
-string connectionString = "Server=localhost;Database=library;Uid=root;Pwd=1234;";
+string? connectionString = System.Environment.GetEnvironmentVariable("CONNECTION_STRING");
+if (connectionString == null || connectionString == "") {
+    throw new Exception("Failed to find CONNECTION_STRING environment variable");
+}
 builder.Services.AddDbContext<DatabaseContext>(options =>
 options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
