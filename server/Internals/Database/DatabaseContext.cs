@@ -1,18 +1,26 @@
 ﻿using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace server.Internals.Database
 {
    public class Book
     {
-        public Guid Id { get; set; } // Guid for primary key (UUID format)
+        [JsonPropertyName("id")]
+        public Guid Id { get; set; }
+        [JsonPropertyName("title")]
         public string Title { get; set; }
+        [JsonPropertyName("genre")]
         public string? Genre { get; set; }
+        [JsonPropertyName("author")]
         public string? Author { get; set; }
+        [JsonPropertyName("isbn")]
         public string? ISBN { get; set; }
+        [JsonPropertyName("publisher")]
         public string? Publisher { get; set; }
         [JsonPropertyName("publication_date")]
         public DateTime? PublicationDate { get; set; }
+        [JsonPropertyName("language")]
         public string? Language { get; set; }
     }
     public class DatabaseContext : DbContext

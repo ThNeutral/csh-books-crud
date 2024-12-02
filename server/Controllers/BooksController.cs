@@ -1,9 +1,12 @@
+using System.Text;
 using System.Text.Json;
+using Newtonsoft.Json;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc;
 using server.Internals.Database;
 using server.Internals.Utils;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Security.Cryptography.X509Certificates;
 
 namespace server.Controllers
 {
@@ -22,8 +25,10 @@ namespace server.Controllers
             return Ok(new { genres = Constants.BookGenres });       
         }
 
-        public class AddBookRequestModel
+        public class BookModel
         {
+            [JsonPropertyName("id")]
+            public string? Id;
             [JsonPropertyName("title")]
             public string Title { get; set; }
             [JsonPropertyName("genre")]
@@ -35,25 +40,23 @@ namespace server.Controllers
             [JsonPropertyName("publisher")]
             public string? Publisher { get; set; }
             [JsonPropertyName("publication_date")]
+            [JsonProperty(PropertyName = "publication_date")]
             public string? PublicationDate { get; set; }
             [JsonPropertyName("language")]
             public string? Language { get; set; }
         }
 
         [HttpPost("add-book")]
-        public async Task<IActionResult> AddBook([FromBody] AddBookRequestModel model)
+        public async Task<IActionResult> AddBook([FromBody] BookModel model)
         {
-            if (!ModelState.IsValid)
-            { 
-                return BadRequest();
-            }
             Book book = new Book { 
                 Id = Guid.NewGuid(), 
                 Author = model.Author, 
                 Genre = model.Genre, 
                 ISBN = model.ISBN,
                 Language = model.Language, 
-                PublicationDate = model.PublicationDate != null ? DateTime.ParseExact(model.PublicationDate, "dd-MM-yyyy", System.Globalization.CultureInfo.InvariantCulture) : null, 
+                PublicationDate = model.PublicationDate != null ? DateTime.ParseExact(model.PublicationDate, "dd-MM-yyyy", 
+                        System.Globalization.CultureInfo.InvariantCulture) : null, 
                 Publisher = model.Publisher, 
                 Title = model.Title 
             };
@@ -80,6 +83,29 @@ namespace server.Controllers
             var guid = Guid.Parse(model.Id);
             await _bookService.DeleteBookByID(guid);
             return StatusCode(StatusCodes.Status204NoContent);
+        }
+        [HttpPost("update-book")]
+        public async Task<IActionResult> UpdateBook()
+        {
+            string body = "";
+            using (var reader = new StreamReader(Request.Body, Encoding.UTF8)) 
+            {
+                body = await reader.ReadToEndAsync();
+            }
+            BookModel model = JsonConvert.DeserializeObject<BookModel>(body)!;
+            Book book = new Book { 
+                Id = Guid.Parse(model.Id!), 
+                Author = model.Author, 
+                Genre = model.Genre, 
+                ISBN = model.ISBN,
+                Language = model.Language, 
+                PublicationDate = model.PublicationDate != null ? DateTime.ParseExact(model.PublicationDate, "dd-MM-yyyy", 
+                        System.Globalization.CultureInfo.InvariantCulture) : null, 
+                Publisher = model.Publisher, 
+                Title = model.Title 
+            };
+            await _bookService.UpdateBook(book);
+            return Ok();
         }
     }
 }

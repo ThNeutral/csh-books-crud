@@ -11,16 +11,9 @@ namespace server.Internals.Database
         }
         public async Task<ErrorCodes> AddBook(Book book) 
         {
-            try
-            {
-                _dbContext.Books.Add(book);
-                await _dbContext.SaveChangesAsync();
-                return ErrorCodes.NoError;
-            }
-            catch (Exception ex) 
-            {
-                return ErrorCodes.SQLError;
-            }
+            _dbContext.Books.Add(book);
+            await _dbContext.SaveChangesAsync();
+            return ErrorCodes.NoError;
         }
         public List<Book> GetBooks()
         {
@@ -43,6 +36,11 @@ namespace server.Internals.Database
             {
                 return ErrorCodes.SQLError;
             }
+        }
+        public async Task<ErrorCodes> UpdateBook(Book book) {
+            _dbContext.Update(book);
+            await _dbContext.SaveChangesAsync();
+            return ErrorCodes.NoError;
         }
     }
 }

@@ -41,3 +41,16 @@ export async function deleteBookQuery(
     }
   } as RequestInit);
 }
+
+export async function updateBookQuery(
+  url: string,
+  { arg }: { arg: any }
+) {
+  await fetch(url, {
+    method: "POST",
+    body: JSON.stringify(arg),
+    headers: {
+      "Content-Type": "application/json"
+    }
+  } as RequestInit);
+}
